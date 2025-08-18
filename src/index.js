@@ -23,10 +23,10 @@ const app = Fastify({ logger: true });
 // Register static file server for public assets like receipts
 // This requires a 'public' folder inside the 'src' directory.
 const publicPath = path.join(process.cwd(), 'public');
-console.log(`Serving static files from: ${publicPath}`); // डीबगिंगसाठी लॉग
+console.log(`[Static Server] Serving files from absolute path: ${publicPath}`); 
 
 app.register(fastifyStatic, {
-  root: publicPath,
+  root: path.join(__dirname, 'public'),
   prefix: '/', 
 });
 // Enable CORS for frontend
