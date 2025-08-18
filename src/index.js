@@ -22,17 +22,18 @@ const app = Fastify({ logger: true });
 
 // Register static file server for public assets like receipts
 // This requires a 'public' folder inside the 'src' directory.
-app.register(fastifyStatic, {
-  root: path.join(__dirname, "public"),
-  prefix: "/", // Files will be accessible from the root URL, e.g., /receipts/farmer.pdf
-});
+const publicPath = path.join(process.cwd(), 'public');
+console.log(`Serving static files from: ${publicPath}`); // डीबगिंगसाठी लॉग
 
+app.register(fastifyStatic, {
+  root: publicPath,
+  prefix: '/', 
+});
 // Enable CORS for frontend
 await app.register(cors, {
   origin: [
     "http://localhost:5173",
-    "https://baap-dairy-backend.trycloudflare.com",
-    "https://baap-dairy-backend-123.trycloudflare.com"
+    " https://dairy-backend-3vlc.onrender.com",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
