@@ -1,0 +1,70 @@
+# Render Blueprint configuration file
+# Learn more at https://render.com/docs/blueprint-spec
+
+services:
+  # तुमच्या Web Service साठीची माहिती
+  - type: web
+    name: baap-dairy-backend
+    env: node
+    # Build Command ही तुमच्या मुख्य फोल्डरमध्ये चालेल
+    buildCommand: npm install
+    # Start Command सुद्धा मुख्य फोल्डरमधून चालेल
+    startCommand: node src/index.js
+    # तुमचे Environment Variables येथे टाका
+    # NOTE: secrets (उदा. password) थेट येथे टाकू नका.
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # तुमचे इतर secrets Render च्या डॅशबोर्डमधून जोडा.
+      - fromGroup: baap-dairy-secrets
+
+  # तुमच्या PostgreSQL डेटाबेससाठीची माहिती
+  - type: psql
+    name: dairysoft-database
+    plan: free
+
+# Environment Variable Groups (Secrets साठी)
+envVarGroups:
+  - name: baap-dairy-secrets
+    envVars:
+      - key: DB_HOST
+        fromService:
+          type: psql
+          name: dairysoft-database
+          property: host
+      - key: DB_USER
+        fromService:
+          type: psql
+          name: dairysoft-database
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: psql
+          name: dairysoft-database
+          property: password
+      - key: DB_NAME
+        fromService:
+          type: psql
+          name: dairysoft-database
+          property: database
+      - key: DB_PORT
+        fromService:
+          type: psql
+          name: dairysoft-database
+          property: port
+      # तुमचे Twilio आणि JWT secrets येथे टाका
+      - key: JWT_SECRET
+        value: mysecretkey
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_WHATSAPP_NUMBER
+        sync: false
+      - key: BASE_URL
+        fromService:
+          type: web
+          name: baap-dairy-backend
+          property: url
