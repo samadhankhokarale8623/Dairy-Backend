@@ -36,7 +36,7 @@ export const sendReceiptHandler = async (req, reply) => {
       return reply.code(400).send({ error: 'Receipt data or user mobile number is missing.' });
     }
 
-    const receiptsDir = path.join(__dirname, '..', '..', '..', 'public', 'receipts');
+    const receiptsDir = path.join(process.cwd(), 'public', 'receipts');
     if (!fs.existsSync(receiptsDir)) {
       fs.mkdirSync(receiptsDir, { recursive: true });
     }
