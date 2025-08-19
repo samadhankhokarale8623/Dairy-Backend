@@ -1,17 +1,33 @@
+// src/utils/receiptGenerator.js
+
 import PDFDocument from 'pdfkit';
 import ExcelJS from 'exceljs';
+// 'fs' (File System) ची आता गरज नाही, म्हणून ते काढून टाकले आहे.
 
-// Helper to format date
+// तारीख फॉरमॅट करण्यासाठी हे फंक्शन
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString("en-IN");
 
+// PDF जनरेटर जो फाईल सेव्ह करण्याऐवजी तिचा डेटा (Buffer) परत करेल
 export const generatePdfReceiptBuffer = (data) => {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50, size: 'A4' });
     const buffers = [];
+
+    // PDF चा डेटा 'buffers' नावाच्या ॲरेमध्ये जमा केला जाईल
     doc.on('data', buffers.push.bind(buffers));
-    doc.on('end', () => resolve(Buffer.concat(buffers)));
+    
+    // PDF तयार झाल्यावर, सर्व डेटा एकत्र करून परत पाठवला जाईल
+    doc.on('end', () => {
+      const pdfData = Buffer.concat(buffers);
+      resolve(pdfData);
+    });
+
+    // एरर आल्यास, तो कळवला जाईल
     doc.on('error', reject);
 
+    // =======================================================
+    // तुमचा PDF तयार करण्याचा सर्व लॉजिक (हा भाग जसाच्या तसा आहे)
+    // =======================================================
     // Header
     doc.fontSize(20).font('Helvetica-Bold').text('Milk Collection Receipt', { align: 'center' });
     doc.fontSize(10).font('Helvetica').text(`Generated on: ${new Date().toLocaleDateString("en-IN")}`, { align: 'center' });
@@ -59,13 +75,16 @@ export const generatePdfReceiptBuffer = (data) => {
     doc.fontSize(10).font('Helvetica');
     doc.text(`Total Liters: ${data.totalLiters} L`, { align: 'right' });
     doc.text(`Total Amount: ₹${data.totalAmount}`, { align: 'right' });
-
-    doc.end();
-    stream.on('finish', () => resolve(filePath));
-    stream.on('error', reject);
+    // =======================================================
+    // PDF तयार करण्याचा लॉजिक येथे संपतो
+    // =======================================================
+    
+    // ही ओळ सर्वात शेवटी असली पाहिजे, जी 'end' इव्हेंट सुरू करते
+    doc.end(); 
   });
 };
 
+// Excel जनरेटर जो फाईल सेव्ह करण्याऐवजी तिचा डेटा (Buffer) परत करेल
 export const generateExcelReceiptBuffer = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet(`${data.period.toUpperCase()} Receipt`);
@@ -132,7 +151,6 @@ export const generateExcelReceiptBuffer = async (data) => {
     column.width = 15;
   });
 
-  sheet.mergeCells('A1:F1');
-  sheet.getCell('A1').value = 'Milk Collection Receipt';
+  // फाईल लिहिण्याऐवजी बफर मिळवा
   return await workbook.xlsx.writeBuffer();
 };
