@@ -1,15 +1,16 @@
 import PDFDocument from 'pdfkit';
 import ExcelJS from 'exceljs';
-import fs from 'fs';
 
 // Helper to format date
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString("en-IN");
 
-export const generatePdfReceipt = (data, filePath) => {
+export const generatePdfReceiptBuffer = (data) => {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50, size: 'A4' });
-    const stream = fs.createWriteStream(filePath);
-    doc.pipe(stream);
+    const buffers = [];
+    doc.on('data', buffers.push.bind(buffers));
+    doc.on('end', () => resolve(Buffer.concat(buffers)));
+    doc.on('error', reject);
 
     // Header
     doc.fontSize(20).font('Helvetica-Bold').text('Milk Collection Receipt', { align: 'center' });
@@ -65,7 +66,7 @@ export const generatePdfReceipt = (data, filePath) => {
   });
 };
 
-export const generateExcelReceipt = async (data, filePath) => {
+export const generateExcelReceiptBuffer = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet(`${data.period.toUpperCase()} Receipt`);
 
@@ -131,6 +132,7 @@ export const generateExcelReceipt = async (data, filePath) => {
     column.width = 15;
   });
 
-  await workbook.xlsx.writeFile(filePath);
-  return filePath;
+  sheet.mergeCells('A1:F1');
+  sheet.getCell('A1').value = 'Milk Collection Receipt';
+  return await workbook.xlsx.writeBuffer();
 };

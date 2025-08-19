@@ -11,7 +11,6 @@ import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
-import fileServerRoutes from "./routes/fileServerRoutes/fileServerRoutes.js"; // हा महत्त्वाचा आहे
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,8 +39,6 @@ app.register(dashboardRoutes, { prefix: "/api" });
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" });
 
-// आपला स्वतःचा फाईल सर्व्हर रूट, जो 100% काम करेल
-app.register(fileServerRoutes, { prefix: "/" }); 
 
 const start = async () => {
   try {
