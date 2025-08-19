@@ -24,8 +24,10 @@ const app = Fastify({ logger: true });
 // ==          हा अचूक मार्ग वापरा (Use this correct path)           ==
 // ===================================================================
 // 'public' फोल्डर आता 'src' च्या आत असल्यामुळे, हा मार्ग 100% काम करेल.
+const publicPath = path.join(process.cwd(), 'public');
+
 app.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
+  root: publicPath,
   prefix: '/',
 });
 // ===================================================================
