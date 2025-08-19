@@ -84,8 +84,8 @@ export const sendReceiptHandler = async (req, reply) => {
     const excelUrl = excelUploadResult.secure_url;
     console.log(`Excel uploaded to Cloudinary: ${excelUrl}`);
         // ================== हा महत्त्वाचा बदल आहे ==================
-    console.log("Waiting for 2 seconds to allow Cloudinary to process the files...");
-    await delay(2000); // 2000 milliseconds = 2 seconds
+    console.log("Waiting for 6 seconds to allow Cloudinary to process the files...");
+    await delay(6000); // 2000 milliseconds = 2 seconds
     // =========================================================
 
     // 3. Twilio ला Cloudinary URLs पाठवा
