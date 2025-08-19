@@ -12,6 +12,7 @@ import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
+import debugRoutes from "./routes/debugRoute/debugRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,7 @@ app.register(authRoutes, { prefix: "/api/auth" });
 app.register(dashboardRoutes, { prefix: "/api" }); // URL: /api/dashboard/stats
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" }); // URL: /api/whatsapp/send-receipt
+app.register(debugRoutes, { prefix: "/api" }); // <-- ही नवीन ओळ जोडा
 
 const start = async () => {
   try {
