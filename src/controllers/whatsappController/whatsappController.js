@@ -22,15 +22,14 @@ const uploadToCloudinary = (buffer, fileName) => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { 
-        resource_type: "raw", // PDF/XLSX साठी 'raw' वापरा
-        public_id: fileName
+        resource_type: "raw",
+        public_id: fileName 
       },
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
       }
     );
-    // येथे 'uploadStream' हाच व्हेरिएबल वापरला आहे याची खात्री करा
     uploadStream.end(buffer);
   });
 };
@@ -49,15 +48,19 @@ export const sendReceiptHandler = async (req, reply) => {
     const farmerName = `${receiptData.user.firstname}_${receiptData.user.lastname}`.replace(/\s+/g, '_');
     
     // 1. PDF तयार करून Cloudinary वर अपलोड करा
+    console.log("Generating PDF buffer...");
     const pdfBuffer = await generatePdfReceiptBuffer(receiptData);
-    const pdfFilename = `${farmerName}_${timestamp}`;
+    const pdfFilename = `${farmerName}_${timestamp}.pdf`; // <<-- हा महत्त्वाचा बदल आहे
+    console.log("Uploading PDF to Cloudinary...");
     const pdfUploadResult = await uploadToCloudinary(pdfBuffer, pdfFilename);
     const pdfUrl = pdfUploadResult.secure_url;
     console.log(`PDF uploaded to Cloudinary: ${pdfUrl}`);
 
     // 2. Excel तयार करून Cloudinary वर अपलोड करा
+    console.log("Generating Excel buffer...");
     const excelBuffer = await generateExcelReceiptBuffer(receiptData);
-    const excelFilename = `${farmerName}_${timestamp}`;
+    const excelFilename = `${farmerName}_${timestamp}.xlsx`; // <<-- हा महत्त्वाचा बदल आहे
+    console.log("Uploading Excel to Cloudinary...");
     const excelUploadResult = await uploadToCloudinary(excelBuffer, excelFilename);
     const excelUrl = excelUploadResult.secure_url;
     console.log(`Excel uploaded to Cloudinary: ${excelUrl}`);
@@ -77,11 +80,10 @@ export const sendReceiptHandler = async (req, reply) => {
     reply.code(200).send({ message: 'WhatsApp message sent successfully via Cloudinary.' });
 
   } catch (err) {
-    // आता आपण एररचा 'details' अधिक चांगल्या प्रकारे पाठवू
     console.error("❌ FAILED TO PROCESS AND SEND VIA CLOUDINARY ❌", err);
     reply.code(500).send({ 
         error: 'Failed to send WhatsApp message.', 
-        details: err.message // मूळ एररचा मेसेज पाठवा
+        details: err.message
     });
   }
 };
