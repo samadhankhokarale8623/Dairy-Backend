@@ -1,4 +1,4 @@
-// src/index.js (नवीन आणि अंतिम दुरुस्त केलेला)
+// src/index.js (अंतिम आणि 100% बरोबर)
 
 import Fastify from "fastify";
 import dotenv from "dotenv";
@@ -12,25 +12,18 @@ import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
-import debugRoutes from "./routes/debugRoute/debugRoutes.js"; // डीबगची आता गरज नाही
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename); // __dirname आता 'src' फोल्डरचा मार्ग देतो.
+const __dirname = path.dirname(__filename); // __dirname आता 'src' फोल्डरचा अचूक मार्ग देतो.
 
 dotenv.config();
 const app = Fastify({ logger: true });
 
-// ===================================================================
-// ==          हा अचूक मार्ग वापरा (Use this correct path)           ==
-// ===================================================================
 // 'public' फोल्डर आता 'src' च्या आत असल्यामुळे, हा मार्ग 100% काम करेल.
-const publicPath = path.join(process.cwd(), 'public');
-
 app.register(fastifyStatic, {
-  root: publicPath,
+  root: path.join(__dirname, 'public'),
   prefix: '/',
 });
-// ===================================================================
 
 // CORS सेटिंग्ज
 await app.register(cors, {
@@ -48,11 +41,10 @@ app.register(authRoutes, { prefix: "/api/auth" });
 app.register(dashboardRoutes, { prefix: "/api" });
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" });
-app.register(debugRoutes, { prefix: "/api" });
 
 const start = async () => {
   try {
-    const port = process.env.PORT || 10000; // Render साठी 10000 वापरा
+    const port = process.env.PORT || 10000;
     await app.listen({ port: port, host: "0.0.0.0" });
     console.log(`✅ Server running on port ${port}`);
   } catch (err) {
@@ -61,7 +53,6 @@ const start = async () => {
   }
 };
 start();
-
 // import Fastify from 'fastify';
 // import dotenv from 'dotenv';
 // import authRoutes from './routes/authRoutes.js';
