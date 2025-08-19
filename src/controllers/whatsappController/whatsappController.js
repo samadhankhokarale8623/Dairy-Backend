@@ -33,7 +33,8 @@ const uploadToCloudinary = (buffer, fileName) => {
     uploadStream.end(buffer);
   });
 };
-
+// 2 सेकंद थांबण्यासाठी एक सोपे फंक्शन
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 export const sendReceiptHandler = async (req, reply) => {
   try {
     if (!client) {
@@ -82,6 +83,10 @@ export const sendReceiptHandler = async (req, reply) => {
     const excelUploadResult = await uploadToCloudinary(excelBuffer, excelFilename);
     const excelUrl = excelUploadResult.secure_url;
     console.log(`Excel uploaded to Cloudinary: ${excelUrl}`);
+        // ================== हा महत्त्वाचा बदल आहे ==================
+    console.log("Waiting for 2 seconds to allow Cloudinary to process the files...");
+    await delay(2000); // 2000 milliseconds = 2 seconds
+    // =========================================================
 
     // 3. Twilio ला Cloudinary URLs पाठवा
     const userMobile = receiptData.user.mobile_number;
