@@ -12,18 +12,14 @@ import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
+import fileServerRoutes from "./routes/fileServerRoutes/fileServerRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename); // __dirname आता 'src' फोल्डरचा अचूक मार्ग देतो.
+const __dirname = path.dirname(__filename); 
 
 dotenv.config();
 const app = Fastify({ logger: true });
 
-// 'public' फोल्डर आता 'src' च्या आत असल्यामुळे, हा मार्ग 100% काम करेल.
-app.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-  prefix: '/',
-});
 
 // CORS सेटिंग्ज
 await app.register(cors, {
@@ -41,6 +37,7 @@ app.register(authRoutes, { prefix: "/api/auth" });
 app.register(dashboardRoutes, { prefix: "/api" });
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" });
+app.register(fileServerRoutes, { prefix: "/" }); 
 
 const start = async () => {
   try {
