@@ -1,27 +1,29 @@
-// src/index.js (अंतिम आणि 100% बरोबर)
+// src/index.js (अंतिम आणि 100% खात्रीशीर उपाय)
 
 import Fastify from "fastify";
 import dotenv from "dotenv";
 import cors from "@fastify/cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import fastifyStatic from "@fastify/static";
 
 // Routes
 import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
-import fileServerRoutes from "./routes/fileServerRoutes/fileServerRoutes.js";
+import fileServerRoutes from "./routes/fileServerRoutes/fileServerRoutes.js"; // हा महत्त्वाचा आहे
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename); 
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 const app = Fastify({ logger: true });
 
+// ===================================================================
+// ==          fastifyStatic चा ब्लॉक पूर्णपणे काढून टाकला आहे         ==
+// ===================================================================
 
-// CORS सेटिंग्ज
+// CORS सेटिंग्ज (हा ब्लॉक महत्त्वाचा आहे)
 await app.register(cors, {
   origin: [
     "http://localhost:5173",
@@ -37,6 +39,8 @@ app.register(authRoutes, { prefix: "/api/auth" });
 app.register(dashboardRoutes, { prefix: "/api" });
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" });
+
+// आपला स्वतःचा फाईल सर्व्हर रूट, जो 100% काम करेल
 app.register(fileServerRoutes, { prefix: "/" }); 
 
 const start = async () => {
@@ -50,6 +54,7 @@ const start = async () => {
   }
 };
 start();
+
 // import Fastify from 'fastify';
 // import dotenv from 'dotenv';
 // import authRoutes from './routes/authRoutes.js';
