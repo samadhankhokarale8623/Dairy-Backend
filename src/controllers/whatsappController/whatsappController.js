@@ -50,7 +50,16 @@ export const sendReceiptHandler = async (req, reply) => {
     // 1. PDF तयार करून Cloudinary वर अपलोड करा
     console.log("Generating PDF buffer...");
     const pdfBuffer = await generatePdfReceiptBuffer(receiptData);
-    const pdfFilename = `${farmerName}_${timestamp}.pdf`; // <<-- हा महत्त्वाचा बदल आहे
+
+    // ================== सुरक्षा तपासणी (Safety Check) START ==================
+    if (!pdfBuffer || pdfBuffer.length === 0) {
+      console.error("CRITICAL ERROR: Generated PDF buffer is empty!");
+      throw new Error("Generated PDF file was empty. Cannot upload.");
+    }
+    console.log(`Generated PDF buffer size: ${pdfBuffer.length} bytes.`);
+    // ================== सुरक्षा तपासणी (Safety Check) END ==================
+
+    const pdfFilename = `${farmerName}_${timestamp}.pdf`;
     console.log("Uploading PDF to Cloudinary...");
     const pdfUploadResult = await uploadToCloudinary(pdfBuffer, pdfFilename);
     const pdfUrl = pdfUploadResult.secure_url;
@@ -59,7 +68,16 @@ export const sendReceiptHandler = async (req, reply) => {
     // 2. Excel तयार करून Cloudinary वर अपलोड करा
     console.log("Generating Excel buffer...");
     const excelBuffer = await generateExcelReceiptBuffer(receiptData);
-    const excelFilename = `${farmerName}_${timestamp}.xlsx`; // <<-- हा महत्त्वाचा बदल आहे
+
+    // ================== सुरक्षा तपासणी (Safety Check) START ==================
+    if (!excelBuffer || excelBuffer.length === 0) {
+      console.error("CRITICAL ERROR: Generated Excel buffer is empty!");
+      throw new Error("Generated Excel file was empty. Cannot upload.");
+    }
+    console.log(`Generated Excel buffer size: ${excelBuffer.length} bytes.`);
+    // ================== सुरक्षा तपासणी (Safety Check) END ==================
+
+    const excelFilename = `${farmerName}_${timestamp}.xlsx`;
     console.log("Uploading Excel to Cloudinary...");
     const excelUploadResult = await uploadToCloudinary(excelBuffer, excelFilename);
     const excelUrl = excelUploadResult.secure_url;
