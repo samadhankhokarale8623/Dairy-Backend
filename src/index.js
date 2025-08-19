@@ -12,7 +12,7 @@ import authRoutes from "./routes/authRoute/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes/dashboardRoutes.js";
 import milkRoutes from "./routes/milkRoutes/milkRoutes.js";
 import whatsAppRoutes from "./routes/whatsappRoutes/whatsappRoutes.js";
-// import debugRoutes from "./routes/debugRoute/debugRoutes.js"; // डीबगची आता गरज नाही
+import debugRoutes from "./routes/debugRoute/debugRoutes.js"; // डीबगची आता गरज नाही
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); // __dirname आता 'src' फोल्डरचा मार्ग देतो.
@@ -46,7 +46,7 @@ app.register(authRoutes, { prefix: "/api/auth" });
 app.register(dashboardRoutes, { prefix: "/api" });
 app.register(milkRoutes, { prefix: "/api/milk" });
 app.register(whatsAppRoutes, { prefix: "/api" });
-// app.register(debugRoutes, { prefix: "/api" });
+app.register(debugRoutes, { prefix: "/api" });
 
 const start = async () => {
   try {
