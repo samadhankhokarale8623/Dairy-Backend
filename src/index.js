@@ -35,6 +35,9 @@ await app.register(cors, {
   origin: [
     "http://localhost:5173",
     " https://dairy-backend-3vlc.onrender.com",
+    
+    //frontend url
+     "https://baap-dairy-platform-frontend.onrender.com" 
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
